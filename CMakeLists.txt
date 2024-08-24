@@ -1,38 +1,50 @@
-cmake_minimum_required( VERSION 3.5 )
+# Minimum CMake version required
+cmake_minimum_required(VERSION 3.10)
 
-project( GLFW-CMake-starter )
+# Project name and version
+project(OpenGLDiscovery VERSION 0.0.1)
 
-find_package( OpenGL REQUIRED )
+# Specify the C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-include_directories( ${OPENGL_INCLUDE_DIRS} )
+# Specify cmake modules
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
-set( GLFW_BUILD_DOCS OFF CACHE BOOL  "GLFW lib only" )
-set( GLFW_INSTALL OFF CACHE BOOL  "GLFW lib only" )
-set( GLAD_GL "" )
+# Set temple "main" directory
+set(DIRECTORY "HelloWindow")
 
-add_subdirectory( glfw )
+# Set the output directory for the built executable
+if(WIN32)
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+endif(WIN32)
 
-option( GLFW-CMAKE-STARTER-USE-GLFW-GLAD "Use GLAD from GLFW" ON )
+# Set necessary libs
+if(WIN32)
+	set(LIBS glfw3 opengl32 assimp freetype irrKlang) 
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif(WIN32)
 
-if( GLFW-CMAKE-STARTER-USE-GLFW-GLAD )
-    include_directories("${GLFW_SOURCE_DIR}/deps")
-    set( GLAD_GL "${GLFW_SOURCE_DIR}/deps/glad/gl.h" )
-endif()
+# Link libs
+link_directories(${CMAKE_SOURCE_DIR}/lib)
 
-if( MSVC )
-    SET( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup" )
-endif()
+# Add source files (modify this to include all source files)
+file(GLOB_RECURSE SOURCES "src/${DIRECTORY}/*.cpp" "src/${DIRECTORY}/*.h")
 
-set( GLFW-CMAKE-STARTER-SRC
-        main.cpp
-        )
+# Link the necessary libs
+find_package(GLFW3 REQUIRED) #submodule
 
-add_executable( GLFW-CMake-starter WIN32 ${GLFW-CMAKE-STARTER-SRC} ${GLAD_GL} )
-target_link_libraries( GLFW-CMake-starter ${OPENGL_LIBRARIES} glfw )
-if( MSVC )
-    if(${CMAKE_VERSION} VERSION_LESS "3.6.0")
-        message( "\n\t[ WARNING ]\n\n\tCMake version lower than 3.6.\n\n\t - Please update CMake and rerun; OR\n\t - Manually set 'GLFW-CMake-starter' as StartUp Project in Visual Studio.\n" )
-    else()
-        set_property( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT GLFW-CMake-starter )
-    endif()
-endif()
+add_library(STB_IMAGE "src/stb_image.cpp") #static
+set(LIBS ${LIBS} STB_IMAGE)
+
+add_library(GLAD "src/glad.c") #static
+set(LIBS ${LIBS} GLAD)
+
+# Create the executable from the source files
+add_executable(OpenGLDiscovery ${SOURCES})
+
+# Link the libraries to the executable
+target_link_libraries(OpenGLDiscovery ${LIBS})
+
+# Include directories for headers
+include_directories(${CMAKE_SOURCE_DIR}/includes)

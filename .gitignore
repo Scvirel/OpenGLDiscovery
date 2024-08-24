@@ -1,4 +1,8 @@
-﻿build
+﻿# Visual studio generated
 .vs
 .vscode
-.DS_Store
+
+# Ignores following folders
+bin/
+build/
+out/
