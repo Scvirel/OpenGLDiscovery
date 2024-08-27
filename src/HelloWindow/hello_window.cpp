@@ -26,6 +26,7 @@ const char* fragmentShaderSource =
 int main()
 {
 	std::cout << "Hello window!" << std::endl;
+
 	// glfw: initialize and configure
 	// ------------------------------
 	glfwInit();
@@ -60,23 +61,8 @@ int main()
 
 	// build and compile our shader program
 	// ------------------------------------
-	// vertex shader
-	float verticles[] = {
-	-0.5f, -0.5f, 0.0f,
-	0.5f, -0.5f, 0.0f,
-	0.0f, 0.5f, 0.0f
-	};
-
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verticles), verticles, GL_STATIC_DRAW);
-
-	unsigned int vertexShader;
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-
+	// Vertex shader
+	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
 
@@ -91,9 +77,8 @@ int main()
 		return -1;
 	}
 
-	// fragment shader
-	unsigned int fragmentShader;
-	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	// Fragment shader
+	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
 	glCompileShader(fragmentShader);
 
@@ -121,26 +106,57 @@ int main()
 		return -1;
 	}
 
-	glUseProgram(shaderProgram);
-
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+
+	float vertices[] = {
+		0.5f, 0.5f, 0.0f, // top right
+		0.5f, -0.5f, 0.0f, // bottom right
+		-0.5f, -0.5f, 0.0f, // bottom left
+		-0.5f, 0.5f, 0.0f // top left
+	};
+	unsigned int indices[] = { // start from 0!
+		0, 1, 3, // first triangle
+		1, 2, 3 // second triangle
+	};
+
+	unsigned int VAO;// Vertex Array Objects
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	unsigned int VBO;// Vertex Buffer Objects
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	unsigned int EBO; // Element Buffer Objects 
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	//Render loop
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);
 
-		//Rendering
+		//render
+		//----
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		glUseProgram(shaderProgram);
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-
-
-
 
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	// ------------------------------------------------------------------
