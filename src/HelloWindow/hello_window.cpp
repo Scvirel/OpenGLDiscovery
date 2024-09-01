@@ -110,14 +110,15 @@ int main()
 	glDeleteShader(fragmentShader);
 
 	float vertices[] = {
-		0.5f, 0.5f, 0.0f, // top right
-		0.5f, -0.5f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f, // bottom left
-		-0.5f, 0.5f, 0.0f // top left
+		0.5f, 0.0f, 0.0f,
+		0.5f, 0.5f, 0.0f,
+		0.0f, 0.5f, 0.0f,
+		-0.5f, 0.0f, 0.0f,
+		-0.5f, 0.5f, 0.0f,
 	};
 	unsigned int indices[] = { // start from 0!
-		0, 1, 3, // first triangle
-		1, 2, 3 // second triangle
+		0, 1, 2, // first triangle
+		2, 3, 4 // second triangle
 	};
 
 	unsigned int VAO;// Vertex Array Objects
@@ -137,7 +138,7 @@ int main()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	
 
 	//Render loop
 	while (!glfwWindowShouldClose(window))
@@ -151,8 +152,12 @@ int main()
 
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)0);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)12);
 		glBindVertexArray(0);
+
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -160,8 +165,12 @@ int main()
 
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	// ------------------------------------------------------------------
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+	glDeleteProgram(shaderProgram);
+
 	glfwTerminate();
-	return 0;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
