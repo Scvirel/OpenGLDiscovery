@@ -43,7 +43,7 @@ public:
 		}
 		catch (std::ifstream::failure exception)
 		{
-			std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" + exception.code << std::endl;
+			std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
 		}
 
 		const char* vShaderCode = vertexCode.c_str();
@@ -62,7 +62,6 @@ public:
 		{
 			glGetShaderInfoLog(vertex, 512, NULL, infoLog);
 			std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-			return -1;
 		}
 
 		fragment = glCreateShader(GL_FRAGMENT_SHADER);
@@ -74,7 +73,6 @@ public:
 		{
 			glGetShaderInfoLog(fragment, 512, NULL, infoLog);
 			std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-			return -1;
 		}
 
 		ID = glCreateProgram();
