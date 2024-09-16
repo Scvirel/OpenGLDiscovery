@@ -2,7 +2,16 @@
 .vs
 .vscode
 
-# Ignores following folders
-bin/
-build/
-out/
+# Directories
+Binaries/
+
+# Files
+*.vcxproj
+*.vcxproj.user
+*.vcxproj.filters
+*.sln
+*.log
+Makefile
+
+# Exclude
+!Vendor/Binaries

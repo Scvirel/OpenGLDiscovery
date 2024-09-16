@@ -46,7 +46,7 @@ int main()
 
 	// build and compile our shader program
 	// ------------------------------------
-	Shader shaderClass("basicShader.vs", "basicShader.fs");
+	Shader shaderClass("Shaders/basicShader.vs", "Shaders/basicShader.fs");
 
 	//float vertices[] = {
 	//	0.5f, 0.0f, 0.0f,
