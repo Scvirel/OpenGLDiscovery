@@ -48,14 +48,6 @@ int main()
 	// ------------------------------------
 	Shader shaderClass("Shaders/basicShader.vs", "Shaders/basicShader.fs");
 
-	//float vertices[] = {
-	//	0.5f, 0.0f, 0.0f,
-	//	0.5f, 0.5f, 0.0f,
-	//	0.0f, 0.5f, 0.0f,
-	//	-0.5f, 0.0f, 0.0f,
-	//	-0.5f, 0.5f, 0.0f,
-	//};
-
 	float vertices[] = {
 		// positions       // colors
 		0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
@@ -98,27 +90,14 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		//float timeValue = glfwGetTime();
-		//float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
-		//int vertexColorLocation = glGetUniformLocation(shaderProgram, "globalColor");
-
 		shaderClass.Use();
-		//glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
-		//glBindVertexArray(VAO);
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)0);
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)12);
-		//glBindVertexArray(0);
-
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
-	// glfw: terminate, clearing all previously allocated GLFW resources.
-	// ------------------------------------------------------------------
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
